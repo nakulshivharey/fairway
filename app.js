@@ -491,5 +491,20 @@ function viewBag() {
 }
 
 // ---------- Arranque ----------
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+const VERSION = 'v6';
+if ('serviceWorker' in navigator) {
+  let reloaded = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (!reloaded && !db.active) { reloaded = true; location.reload(); } });
+  navigator.serviceWorker.register('sw.js').then(r => r.update()).catch(() => {});
+}
+// Pie con la versión y un botón para forzar la actualización (conserva tus datos)
+const foot = document.createElement('div');
+foot.style.cssText = 'text-align:center;padding:16px;font-size:.75rem;color:var(--mut)';
+foot.innerHTML = `Fairway ${VERSION} · <a href="#" id="upd" style="color:inherit">Forzar actualización</a>`;
+document.body.insertBefore(foot, $('#tabs'));
+$('#upd').onclick = async e => {
+  e.preventDefault();
+  try { (await navigator.serviceWorker.getRegistrations()).forEach(r => r.unregister()); (await caches.keys()).forEach(k => caches.delete(k)); } catch (x) {}
+  location.reload();
+};
 go('round');
