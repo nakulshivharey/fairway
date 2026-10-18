@@ -1,0 +1,9 @@
+{
+  "name": "Fairway - Golf personal",
+  "short_name": "Fairway",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f3d2e",
+  "theme_color": "#0f3d2e",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
