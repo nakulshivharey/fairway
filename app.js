@@ -150,10 +150,24 @@ function viewCourses() {
   $('#imp').onclick = importNearby;
 }
 
+const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.private.coffee/api/interpreter',
+  'https://overpass.kumi.systems/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter'];
+// Los servidores públicos de Overpass se saturan a menudo: probamos varios y reintentamos.
 async function overpass(q) {
-  const r = await fetch('https://overpass-api.de/api/interpreter', { method: 'POST', body: 'data=' + encodeURIComponent(q) });
-  if (!r.ok) throw new Error('Overpass ' + r.status);
-  return (await r.json()).elements;
+  for (let round = 0; round < 2; round++) {
+    for (const url of OVERPASS) {
+      const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 25000);
+      try {
+        const r = await fetch(url, { method: 'POST', body: 'data=' + encodeURIComponent(q),
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, signal: ctl.signal });
+        if (!r.ok) continue;
+        const j = await r.json();
+        if (j && j.elements) return j.elements;
+      } catch (e) { /* siguiente servidor */ } finally { clearTimeout(t); }
+    }
+    await new Promise(r => setTimeout(r, 2000));
+  }
+  throw new Error('Los servidores de OpenStreetMap están saturados. Inténtalo de nuevo en unos minutos.');
 }
 function importNearby() {
   const res = $('#res'); res.innerHTML = '<div class="card">Buscando tu posición…</div>';
