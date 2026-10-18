@@ -174,7 +174,7 @@ function viewHole() {
     <div class="mapwrap">
       <div id="map"></div>
       <div class="ov bigd"><small>Centro (yd)</small><b id="dC">–</b><small><span id="dF">–</span> · <span id="dB">–</span></small></div>
-      <div class="ov chipov" id="plays">Plays like</div>
+      <div class="ov chipov" id="plays"></div>
       <div class="ov botbar"><select id="clubSel">${clubs.map(k => `<option>${esc(k)}</option>`).join('')}</select><button class="p" id="shot">⛳ Marcar golpe</button></div>
     </div>
     <div class="mut" id="club" style="text-align:center"></div>
