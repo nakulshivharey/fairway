@@ -27,3 +27,13 @@ label{display:block;margin:8px 0 4px;font-size:.85rem;color:var(--mut)}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.grid .card b{font-size:1.5rem;display:block}
 table{width:100%;border-collapse:collapse;font-size:.9rem}td,th{padding:6px 4px;text-align:center;border-bottom:1px solid var(--line)}
 .eagle{color:#d4a017;font-weight:700}.birdie{color:var(--ok);font-weight:700}.bogey{color:var(--acc)}
+/* Pantalla de hoyo: mapa grande con controles superpuestos (estilo apps de golf GPS) */
+.mapwrap{position:relative;margin-bottom:8px}
+.mapwrap #map{height:62vh;min-height:380px;margin:0}
+.ov{position:absolute;z-index:1000}
+.bigd{top:8px;right:8px;background:rgba(15,61,46,.92);color:#fff;border-radius:14px;padding:6px 14px;text-align:center}
+.bigd b{display:block;font-size:2.8rem;line-height:1.05}.bigd small{display:block;opacity:.8;font-size:.7rem}
+.chipov{top:8px;left:8px;background:rgba(0,0,0,.6);color:#fff;padding:4px 10px;border-radius:12px;font-size:.8rem}
+.chipov:empty,.chipov.off{display:none}
+.botbar{bottom:8px;left:8px;right:8px;display:flex;gap:8px}
+.botbar select{flex:1;background:rgba(255,255,255,.95);color:#111}.botbar button{flex:1}

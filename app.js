@@ -171,15 +171,16 @@ function viewHole() {
   const v = view(`
     <div class="row sb"><h1>Hoyo ${r.hole + 1} <span class="mut">Par ${h.par}</span></h1>
       <div class="mut">${total ? total + ' (' + fmtDiff(total - parPlayed) + ')' : ''}</div></div>
-    <div id="map"></div>
-    <div class="dist"><div><span class="mut">Delante</span><b id="dF">–</b></div><div class="c"><span class="mut">Centro</span><b id="dC">–</b></div><div><span class="mut">Fondo</span><b id="dB">–</b></div></div>
-    <div class="mut" id="plays" style="text-align:center;margin-top:6px"></div>
+    <div class="mapwrap">
+      <div id="map"></div>
+      <div class="ov bigd"><small>Centro (yd)</small><b id="dC">–</b><small><span id="dF">–</span> · <span id="dB">–</span></small></div>
+      <div class="ov chipov" id="plays">Plays like</div>
+      <div class="ov botbar"><select id="clubSel">${clubs.map(k => `<option>${esc(k)}</option>`).join('')}</select><button class="p" id="shot">⛳ Marcar golpe</button></div>
+    </div>
     <div class="mut" id="club" style="text-align:center"></div>
     <div class="mut" id="haz" style="text-align:center"></div>
     <div class="mut" id="tgt" style="text-align:center">Toca el mapa para medir a cualquier punto.</div>
-    <div class="card" style="margin-top:10px"><div class="row"><select id="clubSel" class="grow">${clubs.map(k => `<option>${esc(k)}</option>`).join('')}</select>
-      <button class="p" id="shot">Marcar golpe</button></div>
-      <div class="mut" id="lastShot" style="margin-top:6px">${shots.length ? shots.length + ' golpe(s) marcado(s)' : 'Marca cada golpe desde donde lo juegas para medir tus distancias.'}</div>
+    <div class="card" style="margin-top:10px"><div class="mut" id="lastShot">${shots.length ? shots.length + ' golpe(s) marcado(s)' : 'Marca cada golpe desde donde lo juegas para medir tus distancias.'}</div>
       ${shots.length ? '<button class="d" id="undo">Deshacer último golpe</button>' : ''}</div>
     <div class="card"><div class="mut">Golpes</div><div class="stepper"><button data-k="strokes" data-d="-1">−</button><div class="v" id="vS">${s.strokes || '–'}</div><button data-k="strokes" data-d="1">+</button></div></div>
     <div class="card"><div class="mut">Putts</div><div class="stepper"><button data-k="putts" data-d="-1">−</button><div class="v" id="vP">${s.putts}</div><button data-k="putts" data-d="1">+</button></div></div>
@@ -491,7 +492,7 @@ function viewBag() {
 }
 
 // ---------- Arranque ----------
-const VERSION = 'v6';
+const VERSION = 'v7';
 if ('serviceWorker' in navigator) {
   let reloaded = false;
   navigator.serviceWorker.addEventListener('controllerchange', () => { if (!reloaded && !db.active) { reloaded = true; location.reload(); } });

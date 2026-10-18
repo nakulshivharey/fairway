@@ -1,4 +1,4 @@
-const CACHE = 'fairway-v6';
+const CACHE = 'fairway-v7';
 const ASSETS = ['./', './index.html', './style.css', './app.js', './manifest.json', './icon.svg',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'];
 self.addEventListener('install', e => e.waitUntil(
