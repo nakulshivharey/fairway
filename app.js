@@ -135,7 +135,7 @@ const fmtDiff = d => d === 0 ? 'E' : d > 0 ? '+' + d : String(d);
 // ---------- Campos ----------
 function viewCourses() {
   const v = view(`<h1>Campos</h1>
-    <div class="row"><button class="p grow" id="imp">📍 Buscar cerca (OpenStreetMap)</button><button class="s" id="new">＋ Manual</button></div>
+    <div class="row"><button class="p grow" id="imp">📍 Buscar campos (50 km)</button><button class="s" id="new">＋ Manual</button></div>
     <div id="res"></div>
     ${db.courses.map(c => `<div class="card row sb"><div><b>${esc(c.name)}</b><div class="mut">${c.holes.length} hoyos</div></div>
       <div><button class="s" data-e="${c.id}">Editar</button> <button class="d" data-x="${c.id}">✕</button></div></div>`).join('')}`);
@@ -160,9 +160,13 @@ function importNearby() {
   navigator.geolocation.getCurrentPosition(async p => {
     try {
       res.innerHTML = '<div class="card">Buscando campos…</div>';
-      const els = await overpass(`[out:json][timeout:25];nwr["leisure"="golf_course"](around:20000,${p.coords.latitude},${p.coords.longitude});out tags bb;`);
-      const list = els.filter(e => e.bounds && e.tags && e.tags.name);
-      res.innerHTML = list.length ? list.map((e, i) => `<div class="card row sb"><b>${esc(e.tags.name)}</b><button class="p" data-i="${i}">Importar</button></div>`).join('')
+      const els = await overpass(`[out:json][timeout:25];nwr["leisure"="golf_course"](around:50000,${p.coords.latitude},${p.coords.longitude});out tags bb center;`);
+      const here = [p.coords.latitude, p.coords.longitude];
+      const list = els.filter(e => e.bounds && e.tags && e.tags.name).map(e => {
+        const c = e.center || { lat: (e.bounds.minlat + e.bounds.maxlat) / 2, lon: (e.bounds.minlon + e.bounds.maxlon) / 2 };
+        return Object.assign(e, { km: meters(here, [c.lat, c.lon]) / 1000 });
+      }).sort((a, b) => a.km - b.km);
+      res.innerHTML = list.length ? list.map((e, i) => `<div class="card row sb"><div><b>${esc(e.tags.name)}</b><div class="mut">${e.km.toFixed(1)} km</div></div><button class="p" data-i="${i}">Importar</button></div>`).join('')
         : '<div class="card">No se encontraron campos con nombre. Usa «Manual».</div>';
       res.querySelectorAll('[data-i]').forEach(b => b.onclick = async () => {
         const e = list[+b.dataset.i], bb = e.bounds;
